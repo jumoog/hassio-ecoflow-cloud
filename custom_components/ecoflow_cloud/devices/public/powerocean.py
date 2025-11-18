@@ -32,7 +32,7 @@ class PowerOcean(BaseDevice):
     def sensors(self, client: EcoflowApiClient) -> list[BaseSensorEntity]:
         return [
             SolarPowerSensorEntity(client, self, "mpptPwr", "mpptPwr"),
-            LevelSensorEntity(client, self, "bpSoc", "bpSoc"),
+            LevelSensorEntity(client, self, "96_8.bpSoc", "bpSoc"),
             WattsSensorEntity(client, self, "bpPwr", "bpPwr"),
             SystemPowerSensorEntity(client, self, "sysLoadPwr", "sysLoadPwr"),
             SystemPowerSensorEntity(client, self, "sysGridPwr", "sysGridPwr"),
