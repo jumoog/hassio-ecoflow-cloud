@@ -3,10 +3,13 @@ from .. import BaseDevice
 from .data_bridge import to_plain
 
 from ...sensor import (
+    CelsiusSensorEntity,
+    CyclesSensorEntity,
     VoltSensorEntity,
     WattsSensorEntity,
     LevelSensorEntity,
     AmpSensorEntity,
+    TempSensorEntity,
     SolarPowerSensorEntity,
     SolarAmpSensorEntity,
     SystemPowerSensorEntity,
@@ -37,13 +40,38 @@ class PowerOcean(BaseDevice):
             SystemPowerSensorEntity(client, self, "sysLoadPwr", "sysLoadPwr"),
             SystemPowerSensorEntity(client, self, "sysGridPwr", "sysGridPwr"),
 
+
             LevelSensorEntity(client, self, "bp1.bpSoc", "Battery 1 SoC"),
             WattsSensorEntity(client, self, "bp1.bpPwr", "Battery 1 Power"),
             AmpSensorEntity(client, self, "bp1.bpAmp", "Battery 1 Current"),
+            VoltSensorEntity(client, self, "bp1.bpVol", "Battery 1 Voltage"),
+            TempSensorEntity(client, self, "bp1.bpHvMosTemp", "Battery 1 HV MOS Temp"),
+            TempSensorEntity(client, self, "bp1.bpLvMosTemp", "Battery 1 LV MOS Temp"),
+            TempSensorEntity(client, self, "bp1.bpEnvTemp", "Battery 1 Env Temp"),
+            TempSensorEntity(client, self, "bp1.bpHtsTemp", "Battery 1 Heater Temp"),
+            TempSensorEntity(client, self, "bp1.bpBusPosTemp", "Battery 1 Bus + Temp"),
+            TempSensorEntity(client, self, "bp1.bpBusNegTemp", "Battery 1 Bus - Temp"),
+            TempSensorEntity(client, self, "bp1.bpPtcTemp", "Battery 1 PTC Temp"),
+            TempSensorEntity(client, self, "bp1.bpPtcTemp2", "Battery 1 PTC Temp 2"),
+            TempSensorEntity(client, self, "bp1.bpMaxCellTemp", "Battery 1 Max Cell Temp"),
+            TempSensorEntity(client, self, "bp1.bpMinCellTemp", "Battery 1 Min Cell Temp"),
+            CyclesSensorEntity(client, self, "bp1.bpCycles", "Battery 1 Cycles"),
 
             LevelSensorEntity(client, self, "bp2.bpSoc", "Battery 2 SoC"),
             WattsSensorEntity(client, self, "bp2.bpPwr", "Battery 2 Power"),
             AmpSensorEntity(client, self, "bp2.bpAmp", "Battery 2 Current"),
+            TempSensorEntity(client, self, "bp2.bpHvMosTemp", "Battery 2 HV MOS Temp"),
+            TempSensorEntity(client, self, "bp2.bpLvMosTemp", "Battery 2 LV MOS Temp"),
+            TempSensorEntity(client, self, "bp2.bpEnvTemp", "Battery 2 Env Temp"),
+            TempSensorEntity(client, self, "bp2.bpHtsTemp", "Battery 2 Heater Temp"),
+            TempSensorEntity(client, self, "bp2.bpBusPosTemp", "Battery 2 Bus + Temp"),
+            TempSensorEntity(client, self, "bp2.bpBusNegTemp", "Battery 2 Bus - Temp"),
+            TempSensorEntity(client, self, "bp2.bpPtcTemp", "Battery 2 PTC Temp"),
+            TempSensorEntity(client, self, "bp2.bpPtcTemp2", "Battery 2 PTC Temp 2"),
+            TempSensorEntity(client, self, "bp2.bpMaxCellTemp", "Battery 2 Max Cell Temp"),
+            TempSensorEntity(client, self, "bp2.bpMinCellTemp", "Battery 2 Min Cell Temp"),
+            VoltSensorEntity(client, self, "bp2.bpVol", "Battery 2 Voltage"),
+            CyclesSensorEntity(client, self, "bp2.bpCycles", "Battery 2 Cycles"),
 
             # String 1
             SolarPowerSensorEntity(
