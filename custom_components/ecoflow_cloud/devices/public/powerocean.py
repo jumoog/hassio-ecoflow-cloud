@@ -37,6 +37,14 @@ class PowerOcean(BaseDevice):
             SystemPowerSensorEntity(client, self, "sysLoadPwr", "sysLoadPwr"),
             SystemPowerSensorEntity(client, self, "sysGridPwr", "sysGridPwr"),
 
+            LevelSensorEntity(client, self, "bp1.bpSoc", "Battery 1 SoC"),
+            WattsSensorEntity(client, self, "bp1.bpPwr", "Battery 1 Power"),
+            AmpSensorEntity(client, self, "bp1.bpAmp", "Battery 1 Current"),
+
+            LevelSensorEntity(client, self, "bp2.bpSoc", "Battery 2 SoC"),
+            WattsSensorEntity(client, self, "bp2.bpPwr", "Battery 2 Power"),
+            AmpSensorEntity(client, self, "bp2.bpAmp", "Battery 2 Current"),
+
             # String 1
             SolarPowerSensorEntity(
                 client, self, "96_1.mpptHeartBeat[0].mpptPv[0].pwr", "mpptPv1.pwr"
@@ -108,6 +116,7 @@ class PowerOcean(BaseDevice):
         res = to_plain(res)
         params = res.get("params")
         if isinstance(params, dict):
+            self._inject_battery_params(params, res.get("raw_data"))
             flattened: dict[str, Any] = {}
             for key, value in list(params.items()):
                 self._flatten_param_branch(key, value, flattened)
@@ -130,3 +139,27 @@ class PowerOcean(BaseDevice):
                 next_key = f"{prefix}[{index}]"
                 target[next_key] = item
                 self._flatten_param_branch(next_key, item, target)
+
+    def _inject_battery_params(self, params: dict[str, Any], raw_data: Any) -> None:
+        if not isinstance(raw_data, dict):
+            return
+
+        # Battery heartbeat messages carry both packs; create per-pack aliases based on bpDsrc.
+        heartbeat = None
+        if isinstance(raw_data.get("param"), dict):
+            heartbeat = raw_data.get("param", {}).get("bpHeartBeat")
+        if heartbeat is None and isinstance(raw_data.get("params"), dict):
+            heartbeat = raw_data.get("params", {}).get("bpHeartBeat")
+
+        if not isinstance(heartbeat, list):
+            return
+
+        for entry in heartbeat:
+            if not isinstance(entry, dict):
+                continue
+            dsrc = entry.get("bpDsrc")
+            if dsrc not in (1, 2):
+                continue
+            prefix = f"bp{int(dsrc)}"
+            for field, value in entry.items():
+                params[f"{prefix}.{field}"] = value
