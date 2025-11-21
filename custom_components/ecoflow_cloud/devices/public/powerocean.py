@@ -23,6 +23,8 @@ from ...entities import (
     BaseSelectEntity,
 )
 
+from homeassistant.const import UnitOfEnergy
+
 import base64
 import logging
 from typing import Any
@@ -38,9 +40,11 @@ class ScaledEnergySensorEntity(EnergySensorEntity):
         scale: float,
         enabled: bool = True,
         auto_enable: bool = False,
+
     ):
         super().__init__(client, device, mqtt_key, title, enabled, auto_enable)
         self._scale = scale
+        self._attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
 
     def _update_value(self, val: Any) -> bool:
         try:
@@ -60,12 +64,7 @@ class PowerOcean(BaseDevice):
 
     def sensors(self, client: EcoflowApiClient) -> list[BaseSensorEntity]:
         return [
-            #SolarPowerSensorEntity(client, self, "mpptPwr", "mpptPwr"),
             LevelSensorEntity(client, self, "96_8.bpSoc", "bpSoc"),
-            #WattsSensorEntity(client, self, "bpPwr", "bpPwr"),
-            #SystemPowerSensorEntity(client, self, "sysLoadPwr", "sysLoadPwr"),
-            #SystemPowerSensorEntity(client, self, "sysGridPwr", "sysGridPwr"),
-
 
             LevelSensorEntity(client, self, "bp1.bpSoc", "bp1Soc"),
             WattsSensorEntity(client, self, "bp1.bpPwr", "bp1Pwr"),
@@ -118,8 +117,8 @@ class PowerOcean(BaseDevice):
             TempSensorEntity(client, self, "bp2.bpMinMosTemp", "bp2MinMosTemp"),
             CyclesSensorEntity(client, self, "bp2.bpCycles", "bp2Cycles"),
             EnergySensorEntity(client, self, "bp2.bpRemainWatth", "bp2RemainWatth"),
-            ScaledEnergySensorEntity(client, self, "bp2.bpAccuChgEnergy", "bp2AccuChgEnergy", 0.01),
-            ScaledEnergySensorEntity(client, self, "bp2.bpAccuDsgEnergy", "bp2AccuDsgEnergy", 0.01),
+            ScaledEnergySensorEntity(client, self, "bp2.bpAccuChgEnergy", "bp2AccuChgEnergy", 0.001),
+            ScaledEnergySensorEntity(client, self, "bp2.bpAccuDsgEnergy", "bp2AccuDsgEnergy", 0.001),
             MiscSensorEntity(client, self, "bp2.bpSnDecoded", "bp2Sn"),
             MiscSensorEntity(client, self, "bp2.bmsChgDsgSta", "bp2bmsChgDsgSta"),
             MiscSensorEntity(client, self, "bp2.dabModSta", "bp2dabModSta"),
